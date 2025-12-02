@@ -228,7 +228,7 @@
                                     
                                     <!-- Image Display -->
                                     <div v-if="item.image" class="mb-2 relative rounded-lg overflow-hidden h-24 w-full">
-                                        <img :src="item.image" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110" alt="Spot Image">
+                                        <img :src="item.image" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110 cursor-pointer" alt="Spot Image" @click.stop="previewImage = item.image">
                                     </div>
 
                                     <div class="space-y-1.5 pl-0.5">
@@ -401,6 +401,14 @@
         </div>
         </transition>
 
+        <!-- Image Preview Modal -->
+        <transition name="fade">
+            <div v-if="previewImage" class="fixed inset-0 z-[200] bg-black/90 flex items-center justify-center p-4 backdrop-blur-sm" @click="previewImage = null">
+                <button class="absolute top-6 right-6 text-white text-2xl w-10 h-10 flex items-center justify-center bg-white/10 rounded-full hover:bg-white/20 transition"><i class="fa-solid fa-xmark"></i></button>
+                <img :src="previewImage" class="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl transition-transform duration-300 transform scale-100" @click.stop>
+            </div>
+        </transition>
+
         <transition name="fade">
             <div v-if="showToast" class="fixed top-20 left-1/2 transform -translate-x-1/2 bg-gray-800/90 dark:bg-white/90 text-white dark:text-gray-900 px-4 py-2 rounded-full text-sm font-bold shadow-2xl z-50 pointer-events-none flex items-center backdrop-blur-md">
                 <i class="fa-solid fa-circle-check mr-2 text-green-400 dark:text-green-600"></i>{{ toastMessage }}
@@ -443,6 +451,7 @@
                 const TRIP_DOC_ID = 'seoul_trip_2025_v1';
 
                 const itinerary = ref([]);
+                const previewImage = ref(null);
                 
                 const uniqueDates = ['12/5', '12/6', '12/7', '12/8', '12/9'];
                 const selectedDate = ref('12/5');
@@ -609,8 +618,8 @@
                     const file = event.target.files[0];
                     if (!file) return;
                     
-                    if (file.size > 2 * 1024 * 1024) { 
-                        alert("圖片過大，請選擇小於 2MB 的照片");
+                    if (file.size > 10 * 1024 * 1024) { 
+                        alert("圖片過大，請選擇小於 10MB 的照片");
                         return;
                     }
 
@@ -794,7 +803,7 @@
                 }, { deep: true });
 
                 return {
-                    uniqueDates, selectedDate, currentItinerary, viewMode, isEditMode, showModal, showAccommodationModal, isEditing, form, accForm, showToast, toastMessage, sortableList, isDark, loading, isOnline, searchingCoords, searchingAccCoords,
+                    uniqueDates, selectedDate, currentItinerary, viewMode, isEditMode, showModal, showAccommodationModal, isEditing, form, accForm, showToast, toastMessage, sortableList, isDark, loading, isOnline, searchingCoords, searchingAccCoords, previewImage,
                     selectDate, getDayName, getCategoryColorCode, getCategoryBg, getCategoryIconColor, getCardBorderClass, getCategoryIcon, getCategoryLabel, getWeather, getGoogleMapLink, getNaverLink,
                     openAddModal, editItem, saveForm, deleteItem, closeModal, toggleEditMode, toggleView, locateUser, flyToHome, fitBounds, toggleTheme, autoFillCoords, autoFillAccCoords, handleImageUpload,
                     openAccommodationModal, saveAccommodation,
